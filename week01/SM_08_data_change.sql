@@ -43,7 +43,7 @@ CREATE TABLE hongong3 (
 ALTER TABLE hongong3 AUTO_INCREMENT = 200;
 SET @@auto_increment_increment = 5;
 
-INSERT INTO hongong3 VALUES (NULL, '이상해', 20);
+INSERT INTO hongong3 VALUES (NULL, '이상해씨', 20);
 INSERT INTO hongong3 VALUES (NULL, '버터플', 23);
 INSERT INTO hongong3 VALUES (NULL, '리자몽', 25);
 
