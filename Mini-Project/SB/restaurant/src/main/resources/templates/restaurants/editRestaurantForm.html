@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>맛집 정보 수정</title>
+</head>
+<body>
+<div style="margin: 20px;">
+  <h2>맛집 정보 수정</h2>
+
+  <form th:action="@{/restaurants/{id}/edit(id=${restaurant.id})}" method="post">
+    <div>
+      <label>가게 이름: </label><br>
+      <input type="text" name="name" th:value="${restaurant.name}" required style="width: 250px;">
+    </div>
+    <br>
+    <div>
+      <label>주소: </label><br>
+      <input type="text" name="address" th:value="${restaurant.address}" style="width: 350px;">
+    </div>
+    <br>
+    <div>
+      <label>카테고리: </label><br>
+      <select name="category" th:value="${restaurant.category}">
+        <option value="한식" th:selected="${restaurant.category == '한식'}">한식</option>
+        <option value="중식" th:selected="${restaurant.category == '중식'}">중식</option>
+        <option value="일식" th:selected="${restaurant.category == '일식'}">일식</option>
+        <option value="양식" th:selected="${restaurant.category == '양식'}">양식</option>
+        <option value="기타" th:selected="${restaurant.category == '기타'}">기타</option>
+      </select>
+    </div>
+    <br>
+    <div>
+      <label>먹은 음식 이름: </label><br>
+      <input type="text" name="foodName" th:value="${restaurant.foodName}">
+    </div>
+    <br>
+    <div>
+      <label>음식 가격: </label><br>
+      <input type="number" name="foodPrice" th:value="${restaurant.foodPrice}" placeholder="원 단위">
+    </div>
+    <br>
+    <div>
+      <label>평점: </label><br>
+      <input type="number" name="rating" step="0.1" min="0" max="5" th:value="${restaurant.rating}" placeholder="0.0 ~ 5.0">
+    </div>
+    <br>
+    <div>
+      <label>개인 메모: </label><br>
+      <textarea name="memo" rows="4" cols="40" th:text="${restaurant.memo}"></textarea>
+    </div>
+    <br>
+    <button type="submit">수정 완료</button>
+    <a th:href="@{/restaurants/{id}(id=${restaurant.id})}"><button type="button">취소</button></a>
+  </form>
+</div>
+</body>
+</html>

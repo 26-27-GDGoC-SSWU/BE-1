@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>맛집 등록</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+<div style="margin: 20px;">
+  <h2>새 맛집 등록</h2>
+
+  <form action="/restaurants/new" method="post">
+    <div>
+      <label>가게 이름: </label><br>
+      <input type="text" name="name" required style="width: 250px;">
+    </div>
+    <br>
+    <div>
+      <label>주소: </label><br>
+      <input type="text" name="address" style="width: 350px;">
+    </div>
+    <br>
+    <div>
+      <label>카테고리: </label><br>
+      <select name="category">
+        <option value="한식">한식</option>
+        <option value="중식">중식</option>
+        <option value="일식">일식</option>
+        <option value="양식">양식</option>
+        <option value="기타">기타</option>
+      </select>
+    </div>
+    <br>
+    <div>
+      <label>먹은 음식 이름: </label><br>
+      <input type="text" name="foodName">
+    </div>
+    <br>
+    <div>
+      <label>음식 가격: </label><br>
+      <input type="number" name="foodPrice" placeholder="원 단위">
+    </div>
+    <br>
+    <div>
+      <label>평점: </label><br>
+      <input type="number" name="rating" step="0.1" min="0" max="5" placeholder="0.0 ~ 5.0">
+    </div>
+    <br>
+    <div>
+      <label>개인 메모: </label><br>
+      <textarea name="memo" rows="4" cols="40"></textarea>
+    </div>
+    <br>
+    <button type="submit">등록</button>
+    <a href="/"><button type="button">취소</button></a>
+  </form>
+</div>
+</body>
+</html>
