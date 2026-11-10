@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FitRecord - 운동 기록 상세</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>FitRecord</h1>
+    <h2>운동 기록 상세</h2>
+    <p>오늘 어떤 운동을 했는지 확인해 보세요!</p>
+
+    <hr>
+
+    <h2 th:text="${workout.exerciseType}">운동 종류</h2>
+
+    <div class="detail-item">
+        <strong>운동 날짜</strong>
+        <p th:text="${workout.workoutDate}"></p>
+    </div>
+
+    <div class="detail-item">
+        <strong>운동 종류</strong>
+        <p th:text="${workout.exerciseType}"></p>
+    </div>
+
+    <div class="detail-item">
+        <strong>운동 시간</strong>
+        <p th:text="${workout.duration} + '분'"></p>
+    </div>
+
+    <div class="detail-item">
+        <strong>메모</strong>
+        <p th:text="${workout.memo}"></p>
+    </div>
+
+    <div class="actions">
+
+        <a th:href="@{/workouts/{id}/edit(id=${workout.id})}"
+           class="btn">
+            수정하기
+        </a>
+
+        <form th:action="@{/workouts/{id}/delete(id=${workout.id})}"
+              method="post"
+              style="display:inline;">
+
+            <button type="submit"
+                    class="btn btn-danger"
+                    onclick="return confirm('정말 삭제하시겠습니까?')">
+                삭제하기
+            </button>
+
+        </form>
+
+        <a th:href="@{/}" class="btn btn-secondary">
+            목록으로
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
