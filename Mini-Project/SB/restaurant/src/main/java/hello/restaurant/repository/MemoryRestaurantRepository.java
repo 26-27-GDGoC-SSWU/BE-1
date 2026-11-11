@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Repository
+//@Repository
 public class MemoryRestaurantRepository implements RestaurantRepository{
 
     private static Map<Long, Restaurant> store = new HashMap<>();
