@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팝업 상세</title>
+</head>
+<body>
+
+<div class="container">
+    <h1 th:text="${popup.name}">팝업 이름</h1>
+
+    <p>상태 : <span th:text="${popup.status}"></span></p>
+    <p>브랜드 : <span th:text="${popup.brand}"></span></p>
+    <p>카테고리 : <span th:text="${popup.category}"></span></p>
+    <p>지역 : <span th:text="${popup.region}"></span></p>
+    <p>기간 : <span th:text="${popup.startDate} + ' ~ ' + ${popup.endDate}"></span></p>
+    <p>소개 : <span th:text="${popup.description}"></span></p>
+    <p>공식 링크 : <a th:href="${popup.officialUrl}" th:text="${popup.officialUrl}" target="_blank"></a></p>
+
+    <!-- 수정은 화면 이동, 삭제는 post로 보냄 -->
+    <a th:href="@{/popups/{id}/edit(id=${popup.id})}">수정</a>
+    <form th:action="@{/popups/{id}/delete(id=${popup.id})}" method="post" style="display:inline;">
+        <button type="submit">삭제</button>
+    </form>
+    <a href="/">목록으로</a>
+</div>
+
+</body>
+</html>
