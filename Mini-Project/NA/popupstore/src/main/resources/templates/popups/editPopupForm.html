@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팝업 수정</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>팝업 수정</h1>
+
+    <!-- 기존 값을 th:value로 채워둠 -->
+    <form th:action="@{/popups/{id}/edit(id=${popup.id})}" method="post">
+        <div>
+            <label for="name">팝업 이름</label>
+            <input type="text" id="name" name="name" th:value="${popup.name}" required>
+        </div>
+        <div>
+            <label for="brand">브랜드</label>
+            <input type="text" id="brand" name="brand" th:value="${popup.brand}">
+        </div>
+        <div>
+            <label for="category">카테고리</label>
+            <select id="category" name="category">
+                <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"
+                        th:selected="${c == popup.category}"></option>
+            </select>
+        </div>
+        <div>
+            <label for="region">지역</label>
+            <input type="text" id="region" name="region" th:value="${popup.region}" required>
+        </div>
+        <div>
+            <label for="startDate">시작일</label>
+            <input type="date" id="startDate" name="startDate" th:value="${popup.startDate}" required>
+        </div>
+        <div>
+            <label for="endDate">종료일</label>
+            <input type="date" id="endDate" name="endDate" th:value="${popup.endDate}" required>
+        </div>
+        <div>
+            <label for="description">한줄 소개</label>
+            <input type="text" id="description" name="description" th:value="${popup.description}">
+        </div>
+        <div>
+            <label for="officialUrl">공식 링크</label>
+            <input type="text" id="officialUrl" name="officialUrl" th:value="${popup.officialUrl}">
+        </div>
+        <button type="submit">저장</button>
+        <a th:href="@{/popups/{id}(id=${popup.id})}">취소</a>
+    </form>
+</div>
+
+</body>
+</html>
