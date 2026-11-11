@@ -55,6 +55,6 @@ Spring Boot, Spring Data JPA, MySQL을 활용한 개인 위시리스트 관리 �
 - [x] MySQL 및 JPA 연동
 - [x] Entity, Repository, Service, Controller 구성
 - [x] 상품 등록 API 테스트
-- [ ] 전체 CRUD API 테스트
-- [ ] 카테고리별 조회 및 정렬 기능
-- [ ] 웹 화면 구현
+- [x] 전체 CRUD API 테스트
+- [x] 카테고리별 조회 및 정렬 기능
+- [x] 웹 화면 구현
