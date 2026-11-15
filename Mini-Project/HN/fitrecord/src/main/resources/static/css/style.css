@@ -1,0 +1,168 @@
+
+/* 전체 기본 설정 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 40px 20px;
+    font-family: "Malgun Gothic", sans-serif;
+    background-color: #f5f7f5;
+    color: #26332b;
+}
+
+/* 공통 컨테이너 */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 제목 */
+h1 {
+    color: #247a50;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 30px;
+    color: #26332b;
+}
+
+p {
+    line-height: 1.7;
+    color: #66736a;
+}
+
+/* 버튼과 링크 */
+a {
+    text-decoration: none;
+    color: #247a50;
+    font-weight: bold;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: #278653;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #1e6c41;
+}
+
+.btn-secondary {
+    background: #e9f2ec;
+    color: #247a50;
+}
+
+.btn-danger {
+    background: #e45b5b;
+}
+
+/* 운동 기록 테이블 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #e8eee9;
+}
+
+th {
+    background: #edf5ef;
+    color: #247a50;
+}
+
+tr:hover {
+    background: #f8fbf8;
+}
+
+/* 입력창 */
+input, textarea {
+    width: 100%;
+    padding: 13px;
+    margin-top: 8px;
+    border: 1px solid #dce5de;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #278653;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* 입력 항목 */
+.form-group {
+    margin-bottom: 22px;
+}
+
+label {
+    font-weight: bold;
+    color: #35443a;
+}
+
+/* 상세 화면 */
+.detail-item {
+    padding: 16px 0;
+    border-bottom: 1px solid #e8eee9;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+    align-items: center;
+}
+
+/* 모바일 대응 */
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+    }
+
+    .container {
+        padding: 22px;
+    }
+
+    th, td {
+        padding: 10px 5px;
+        font-size: 13px;
+    }
+}
+
+/* 삭제 버튼 스타일 강제 적용 */
+form button.btn.btn-danger {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #e45b5b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+

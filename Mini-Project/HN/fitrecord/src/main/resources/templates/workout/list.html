@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FitRecord - 운동 기록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>FitRecord</h1>
+    <h2>나의 운동 기록</h2>
+    <p>오늘도 꾸준하게, 나만의 운동 습관 만들기!</p>
+
+    <br>
+
+    <a th:href="@{/workouts/new}" class="btn">
+        + 운동 기록 추가
+    </a>
+
+    <hr>
+
+    <h2>운동 기록 목록</h2>
+
+    <p th:if="${#lists.isEmpty(workouts)}">
+        아직 등록된 운동 기록이 없습니다.
+    </p>
+
+    <table th:unless="${#lists.isEmpty(workouts)}">
+        <thead>
+        <tr>
+            <th>날짜</th>
+            <th>운동 종류</th>
+            <th>운동 시간</th>
+            <th>상세 보기</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="workout : ${workouts}">
+            <td th:text="${workout.workoutDate}"></td>
+            <td th:text="${workout.exerciseType}"></td>
+            <td th:text="${workout.duration} + '분'"></td>
+            <td>
+                <a th:href="@{/workouts/{id}(id=${workout.id})}">
+                    상세 보기
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

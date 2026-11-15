@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>서울 팝업스토어 모음</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>서울 팝업스토어 모음</h1>
+    <p><a href="/popups/new">팝업 등록</a></p>
+
+    <div>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>상태</th>
+                <th>팝업 이름</th>
+                <th>브랜드</th>
+                <th>카테고리</th>
+                <th>지역</th>
+                <th>기간</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 루프를 돈다 -->
+            <tr th:each="popup : ${popups}">
+                <td th:text="${popup.id}"></td>
+                <td th:text="${popup.status}"></td>
+                <td><a th:href="@{/popups/{id}(id=${popup.id})}" th:text="${popup.name}"></a></td>
+                <td th:text="${popup.brand}"></td>
+                <td th:text="${popup.category}"></td>
+                <td th:text="${popup.region}"></td>
+                <td th:text="${popup.startDate} + ' ~ ' + ${popup.endDate}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(popups)}">등록된 팝업이 없습니다.</p>
+    </div>
+</div>
+
+</body>
+</html>

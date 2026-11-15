@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>팝업 등록</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>팝업 등록</h1>
+
+    <!-- input의 name이랑 PopupStoreForm 필드 이름이 같아야 들어감 -->
+    <form action="/popups/new" method="post">
+        <div>
+            <label for="name">팝업 이름</label>
+            <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
+        </div>
+        <div>
+            <label for="brand">브랜드</label>
+            <input type="text" id="brand" name="brand">
+        </div>
+        <div>
+            <label for="category">카테고리</label>
+            <select id="category" name="category">
+                <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
+            </select>
+        </div>
+        <div>
+            <label for="region">지역</label>
+            <input type="text" id="region" name="region" placeholder="ex) 성수" required>
+        </div>
+        <div>
+            <label for="startDate">시작일</label>
+            <input type="date" id="startDate" name="startDate" required>
+        </div>
+        <div>
+            <label for="endDate">종료일</label>
+            <input type="date" id="endDate" name="endDate" required>
+        </div>
+        <div>
+            <label for="description">한줄 소개</label>
+            <input type="text" id="description" name="description">
+        </div>
+        <div>
+            <label for="officialUrl">공식 링크</label>
+            <input type="text" id="officialUrl" name="officialUrl">
+        </div>
+        <button type="submit">등록</button>
+        <a href="/">취소</a>
+    </form>
+</div>
+
+</body>
+</html>
