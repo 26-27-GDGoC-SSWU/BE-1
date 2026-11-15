@@ -52,8 +52,10 @@ public class RestaurantController {
         return "redirect:/";
     }
 
+    // 삭제 처리
     @PostMapping("/restaurants/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
+        System.out.println("삭제 요청 확인: " + id);
         restaurantService.delete(id);
         return "redirect:/";
     }
