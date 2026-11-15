@@ -3,11 +3,13 @@ package hello.restaurant.service;
 import hello.restaurant.domain.Restaurant;
 import hello.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
@@ -22,20 +24,28 @@ public class RestaurantService {
     }
 
     // 맛집 목록 전체 보기
+    @Transactional(readOnly = true)
     public List<Restaurant> findRestaurants() {
         return restaurantRepository.findAll();
     }
 
     // 맛집 세부정보 보기
+    @Transactional(readOnly = true)
     public Optional<Restaurant> findOne(Long restaurantId) {
         return restaurantRepository.findById(restaurantId);
     }
 
     // 맛집 삭제
     public void delete(Long restaurantId) {
-        restaurantRepository.findById(restaurantId).ifPresent(restaurant -> {
-            restaurant.setDeleted(true);
-        });
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+            .orElseThrow(() -> new IllegalArgumentException(
+                    "해당 맛집이 존재하지 않습니다. ID: " + restaurantId
+            ));
+
+        restaurant.setDeleted(true);
+        restaurantRepository.save(restaurant);
+
+        System.out.println("삭제 처리 완료: " + restaurant.getId());
     }
 
     // 휴지통에서 복구하기
