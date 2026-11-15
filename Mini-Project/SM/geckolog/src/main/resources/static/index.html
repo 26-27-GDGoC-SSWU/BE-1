@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>GeckoLog - 반려 도마뱀 성장 일지</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #f4f4f5;
+      color: #18181b;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    h1 { font-size: 24px; font-weight: 700; color: #09090b; margin: 0; }
+    h2 { font-size: 18px; font-weight: 600; margin-top: 32px; margin-bottom: 16px; color: #18181b; }
+
+    .card {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #e4e4e7;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+
+    .form-row { display: flex; gap: 12px; }
+    .form-row .form-group { flex: 1; }
+    .form-group { margin-bottom: 14px; }
+
+    label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #3f3f46; }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid #d4d4d8;
+      border-radius: 8px;
+      box-sizing: border-box;
+      background-color: #fafafa;
+      color: #18181b;
+    }
+
+    input:focus, textarea:focus, select:focus { outline: none; border-color: #09090b; background-color: #ffffff; }
+
+    .weight-date-input-group {
+      display: flex;
+      gap: 6px;
+    }
+    .weight-date-input-group input[type="number"] { flex: 1.2; }
+    .weight-date-input-group input[type="date"] { flex: 1; font-size: 12px; padding: 10px 8px; }
+
+    .filter-container { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+    .filter-btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid #d4d4d8;
+      border-radius: 20px;
+      background-color: #ffffff;
+      color: #3f3f46;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-btn.active { background-color: #09090b; color: #ffffff; border-color: #09090b; }
+
+    .btn-main {
+      width: 100%;
+      padding: 12px;
+      background-color: #09090b;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-main:hover { background-color: #27272a; }
+    .btn-cancel { background-color: #71717a; display: none; }
+
+    .btn-toggle-gecko {
+      background-color: #18181b;
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .card-buttons { float: right; }
+    .btn-edit { background-color: #0969da; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-left: 4px; }
+    .btn-edit:hover { background-color: #0451a5; }
+    .btn-delete { background-color: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-left: 4px; }
+    .btn-delete:hover { background-color: #c0392b; }
+
+    .log-card {
+      background: #ffffff;
+      padding: 18px 20px;
+      border-radius: 12px;
+      border: 1px solid #e4e4e7;
+      margin-bottom: 12px;
+    }
+
+    .gecko-tag {
+      display: inline-block;
+      background: #18181b;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+
+    .log-date { font-weight: 700; color: #09090b; font-size: 15px; margin-bottom: 8px; }
+    .log-info { font-size: 14px; margin: 5px 0; color: #3f3f46; }
+    .log-memo { margin-top: 10px; font-size: 13px; color: #52525b; background: #f4f4f5; padding: 10px; border-radius: 6px; border-left: 3px solid #18181b; }
+
+    .chart-container { position: relative; height: 280px; width: 100%; }
+
+    #gecko-register-card { display: none; background: #fafafa; border: 1.5px dashed #a1a1aa; }
+
+    /* 그래프 섹션 영역 (전체보기 시 숨김용) */
+    #chart-section { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="header-container">
+  <h1>🦎 GeckoLog</h1>
+  <button class="btn-toggle-gecko" onclick="toggleGeckoRegister()">➕ 도마뱀 추가</button>
+</div>
+
+<!-- 1. 도마뱀 신규 등록 카드 (이름 입력란 빈 칸 적용) -->
+<div class="card" id="gecko-register-card">
+  <h3 style="margin-top: 0; font-size: 15px;">🦎 새 도마뱀 프로필 추가</h3>
+  <div class="form-row">
+    <div class="form-group">
+      <label>이름</label>
+      <input type="text" id="newGeckoName" placeholder="">
+    </div>
+    <div class="form-group">
+      <label>성별</label>
+      <select id="newGeckoGender">
+        <option value="미구분">미구분</option>
+        <option value="수컷">수컷</option>
+        <option value="암컷">암컷</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>모프</label>
+      <input type="text" id="newGeckoMorph" placeholder="예: 릴리화이트, 아잔틱">
+    </div>
+    <div class="form-group">
+      <label>해칭일 (생년월일)</label>
+      <input type="date" id="newGeckoBirthDate">
+    </div>
+  </div>
+  <button class="btn-main" onclick="registerGecko()">도마뱀 등록하기</button>
+</div>
+
+<!-- 2. 도마뱀 개체 필터 탭 -->
+<div class="filter-container" id="filter-container">
+  <button class="filter-btn active" onclick="setFilter('ALL', this)">전체 보기</button>
+</div>
+
+<!-- 3. 사육/성장 일지 쓰기 폼 -->
+<div class="card">
+  <h3 id="form-title" style="margin-top: 0; font-size: 16px;">사육/성장 일지 쓰기</h3>
+  <input type="hidden" id="editing-id">
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>도마뱀 선택</label>
+      <select id="geckoSelect"></select>
+    </div>
+
+    <div class="form-group">
+      <label>체중 (g) 및 측정 날짜</label>
+      <div class="weight-date-input-group">
+        <input type="number" step="0.01" id="weight" placeholder="체중 (예: 18.2)">
+        <input type="date" id="date">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>먹이 종류</label>
+      <input type="text" id="foodType" placeholder="예: 슈퍼푸드, 귀뚜라미">
+    </div>
+    <div class="form-group">
+      <label>먹은 양</label>
+      <input type="text" id="foodAmount" placeholder="예: 1.5ml, 2마리">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>특이사항 (메모)</label>
+    <textarea id="memo" rows="2" placeholder="깔끔하게 탈피 완료, 자율 배식 성공 등"></textarea>
+  </div>
+
+  <button id="btn-save" class="btn-main" onclick="saveLog()">저장하기</button>
+  <button id="btn-cancel" class="btn-main btn-cancel" onclick="resetForm()">수정 취소</button>
+</div>
+
+<!-- 4. 맞춤형 체중 성장 곡선 그래프 (개체 선택시에만 노출) -->
+<div id="chart-section">
+  <h2>📈 체중 변화 디테일 그래프</h2>
+  <div class="card">
+    <div class="chart-container">
+      <canvas id="weightChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- 5. 타임라인 목록 -->
+<h2>📅 성장 기록 타임라인</h2>
+<div id="timeline"></div>
+
+<script>
+  document.getElementById('date').value = new Date().toISOString().substring(0, 10);
+
+  let geckoMap = {};
+  let logDataMap = {};
+  let weightChart = null;
+  let currentFilter = 'ALL';
+
+  window.onload = function() {
+    initApp();
+  };
+
+  async function initApp() {
+    await loadGeckos();
+    loadLogs();
+  }
+
+  async function loadGeckos() {
+    const res = await fetch('/api/geckos');
+    const geckos = await res.json();
+
+    geckoMap = {};
+    const filterContainer = document.getElementById('filter-container');
+    const geckoSelect = document.getElementById('geckoSelect');
+
+    filterContainer.innerHTML = `<button class="filter-btn ${currentFilter === 'ALL' ? 'active' : ''}" onclick="setFilter('ALL', this)">전체 보기</button>`;
+    geckoSelect.innerHTML = '';
+
+    if (geckos.length === 0) {
+      geckoSelect.innerHTML = '<option value="">등록된 도마뱀이 없습니다. 상단에서 먼저 추가해 주세요!</option>';
+      return;
+    }
+
+    geckos.forEach(g => {
+      geckoMap[g.name] = g;
+
+      const btn = document.createElement('button');
+      btn.className = `filter-btn ${currentFilter === g.name ? 'active' : ''}`;
+      btn.innerText = `${g.name} (${g.morph || '모프미지정'})`;
+      btn.onclick = () => setFilter(g.name, btn);
+      filterContainer.appendChild(btn);
+
+      const opt = document.createElement('option');
+      opt.value = g.name;
+      opt.innerText = `${g.name} [${g.morph || '모프미지정'} / ${g.gender || '성별미구분'}]`;
+      geckoSelect.appendChild(opt);
+    });
+  }
+
+  function toggleGeckoRegister() {
+    const card = document.getElementById('gecko-register-card');
+    card.style.display = card.style.display === 'block' ? 'none' : 'block';
+  }
+
+  async function registerGecko() {
+    const name = document.getElementById('newGeckoName').value.trim();
+    const gender = document.getElementById('newGeckoGender').value;
+    const morph = document.getElementById('newGeckoMorph').value.trim();
+    const birthDate = document.getElementById('newGeckoBirthDate').value || null;
+
+    if (!name) {
+      alert('도마뱀 이름을 입력해 주세요!');
+      return;
+    }
+
+    const res = await fetch('/api/geckos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, gender, morph, birthDate })
+    });
+
+    if (res.ok) {
+      alert(`${name} 프로필이 등록되었습니다! 🦎`);
+      document.getElementById('newGeckoName').value = '';
+      document.getElementById('newGeckoMorph').value = '';
+      document.getElementById('newGeckoBirthDate').value = '';
+      toggleGeckoRegister();
+      await loadGeckos();
+    } else {
+      alert('이미 존재하는 이름이거나 등록에 실패했습니다.');
+    }
+  }
+
+  function getAgeInMonths(birthDateStr, targetDateStr) {
+    if (!birthDateStr) return 0;
+    const birth = new Date(birthDateStr);
+    const target = targetDateStr ? new Date(targetDateStr) : new Date();
+    const diffDays = Math.floor((target - birth) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return 0;
+    return Math.floor(diffDays / 30.4375);
+  }
+
+  function calculateAgeText(birthDateStr, targetDateStr) {
+    if (!birthDateStr) return null;
+    const birth = new Date(birthDateStr);
+    const target = targetDateStr ? new Date(targetDateStr) : new Date();
+    const diffDays = Math.floor((target - birth) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return '해칭 전';
+    const months = Math.floor(diffDays / 30.4375);
+    return `생후 ${months}개월차 (${diffDays}일째)`;
+  }
+
+  function getStandardWeightForMonth(months) {
+    if (months <= 1) return 3.0;
+    if (months === 2) return 5.0;
+    if (months === 3) return 7.5;
+    if (months === 4) return 10.5;
+    if (months === 5) return 13.5;
+    if (months === 6) return 16.5;
+    if (months === 7) return 20.0;
+    if (months === 8) return 24.0;
+    if (months === 9) return 28.0;
+    if (months === 10) return 31.0;
+    if (months === 11) return 34.0;
+    return 38.0;
+  }
+
+  function setFilter(name, btn) {
+    currentFilter = name;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    if(name !== 'ALL' && document.getElementById('geckoSelect').querySelector(`option[value="${name}"]`)) {
+      document.getElementById('geckoSelect').value = name;
+    }
+    loadLogs();
+  }
+
+  function saveLog() {
+    const editingId = document.getElementById('editing-id').value;
+    const selectedGecko = document.getElementById('geckoSelect').value;
+
+    if (!selectedGecko) {
+      alert('도마뱀을 먼저 선택/등록해 주세요!');
+      return;
+    }
+
+    const data = {
+      geckoName: selectedGecko,
+      date: document.getElementById('date').value,
+      weight: document.getElementById('weight').value ? parseFloat(document.getElementById('weight').value) : null,
+      foodType: document.getElementById('foodType').value,
+      foodAmount: document.getElementById('foodAmount').value,
+      memo: document.getElementById('memo').value
+    };
+
+    const url = editingId ? `/api/logs/${editingId}` : '/api/logs';
+    const method = editingId ? 'PUT' : 'POST';
+
+    fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+            .then(response => {
+              if (response.ok) {
+                resetForm();
+                loadLogs();
+              } else {
+                alert('저장에 실패했습니다.');
+              }
+            });
+  }
+
+  function loadLogs() {
+    const url = currentFilter === 'ALL' ? '/api/logs' : `/api/logs?geckoName=${encodeURIComponent(currentFilter)}`;
+
+    fetch(url)
+            .then(response => response.json())
+            .then(logs => {
+              const timeline = document.getElementById('timeline');
+              timeline.innerHTML = '';
+              logDataMap = {};
+
+              if (logs.length === 0) {
+                timeline.innerHTML = '<p style="text-align:center; color:#a1a1aa; padding: 20px 0;">기록된 일지가 없습니다.</p>';
+                updateChart([]);
+                return;
+              }
+
+              logs.forEach(log => {
+                logDataMap[log.id] = log;
+
+                const geckoInfo = geckoMap[log.geckoName];
+                const ageText = geckoInfo ? calculateAgeText(geckoInfo.birthDate, log.date) : null;
+                const genderText = geckoInfo && geckoInfo.gender ? geckoInfo.gender : '성별 미구분';
+                const morphText = geckoInfo && geckoInfo.morph ? geckoInfo.morph : '모프 미지정';
+
+                const card = document.createElement('div');
+                card.className = 'log-card';
+                card.innerHTML = `
+                        <div class="card-buttons">
+                            <button class="btn-edit" onclick="startEdit(${log.id})">수정</button>
+                            <button class="btn-delete" onclick="deleteLog(${log.id})">삭제</button>
+                        </div>
+                        <span class="gecko-tag">🦎 ${log.geckoName} [${morphText} / ${genderText}] ${ageText ? '• ' + ageText : ''}</span>
+                        <div class="log-date">${log.date}</div>
+                        <div class="log-info">⚖️️ <b>체중:</b> ${log.weight !== null && log.weight !== undefined ? log.weight.toFixed(2) + 'g' : '기록 없음'}</div>
+                        <div class="log-info">🦗 <b>급여:</b> ${log.foodType || '-'} (${log.foodAmount || '-'})</div>
+                        ${log.memo ? `<div class="log-memo">${log.memo}</div>` : ''}
+                    `;
+                timeline.appendChild(card);
+              });
+
+              const sortedLogs = [...logs].reverse();
+              updateChart(sortedLogs);
+            });
+  }
+
+  function updateChart(logs) {
+    const chartSection = document.getElementById('chart-section');
+
+    // [수정 핵심] '전체 보기(ALL)' 탭일 경우 그래프 영역 전체 숨김
+    if (currentFilter === 'ALL') {
+      chartSection.style.display = 'none';
+      if (weightChart) {
+        weightChart.destroy();
+        weightChart = null;
+      }
+      return;
+    }
+
+    // 개별 도마뱀 선택 시에만 그래프 노출
+    chartSection.style.display = 'block';
+
+    const filteredLogs = logs.filter(log => log.weight !== null && log.weight !== undefined);
+    const labels = filteredLogs.map(log => log.date);
+    const weights = filteredLogs.map(log => log.weight);
+
+    const avgWeights = filteredLogs.map(log => {
+      const geckoInfo = geckoMap[log.geckoName];
+      if (!geckoInfo || !geckoInfo.birthDate) {
+        return 15.0;
+      }
+      const months = getAgeInMonths(geckoInfo.birthDate, log.date);
+      return getStandardWeightForMonth(months);
+    });
+
+    const ctx = document.getElementById('weightChart').getContext('2d');
+
+    if (weightChart) {
+      weightChart.destroy();
+    }
+
+    if (filteredLogs.length === 0) return;
+
+    const allValues = [...weights, ...avgWeights];
+    const minWeight = Math.min(...allValues);
+    const maxWeight = Math.max(...allValues);
+    const padding = (maxWeight - minWeight) < 1 ? 0.8 : 1.5;
+
+    weightChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: `${currentFilter} 실제 체중 (g)`,
+            data: weights,
+            borderColor: '#09090b',
+            backgroundColor: 'rgba(9, 9, 11, 0.06)',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#09090b',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            tension: 0.35,
+            fill: true
+          },
+          {
+            label: '해당 개월차 크레 평균 권장 체중 (g)',
+            data: avgWeights,
+            borderColor: '#22c55e',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            pointBackgroundColor: '#22c55e',
+            pointRadius: 3,
+            tension: 0.35,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: { font: { size: 11 }, boxWidth: 20 }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const log = filteredLogs[context.dataIndex];
+                const geckoInfo = geckoMap[log.geckoName];
+                const months = geckoInfo ? getAgeInMonths(geckoInfo.birthDate, log.date) : 0;
+
+                if(context.datasetIndex === 1) {
+                  return ` ${months}개월차 평균 권장: ${context.parsed.y.toFixed(1)}g`;
+                }
+                const ageStr = geckoInfo ? calculateAgeText(geckoInfo.birthDate, log.date) : null;
+                return ` 실제 체중: ${context.parsed.y.toFixed(2)}g ${ageStr ? '(' + ageStr + ')' : ''}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#71717a', font: { size: 11 } } },
+          y: {
+            grid: { color: '#f4f4f5' },
+            ticks: { color: '#71717a', font: { size: 11 } },
+            min: Math.max(0, parseFloat((minWeight - padding).toFixed(1))),
+            max: parseFloat((maxWeight + padding).toFixed(1))
+          }
+        }
+      }
+    });
+  }
+
+  function startEdit(id) {
+    const log = logDataMap[id];
+    if (!log) return;
+
+    document.getElementById('editing-id').value = log.id;
+    document.getElementById('geckoSelect').value = log.geckoName || '';
+    document.getElementById('date').value = log.date;
+    document.getElementById('weight').value = log.weight !== null ? log.weight : '';
+    document.getElementById('foodType').value = log.foodType || '';
+    document.getElementById('foodAmount').value = log.foodAmount || '';
+    document.getElementById('memo').value = log.memo || '';
+
+    document.getElementById('form-title').innerText = '일지 수정하기';
+    document.getElementById('btn-save').innerText = '수정 완료';
+    document.getElementById('btn-cancel').style.display = 'block';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    document.getElementById('editing-id').value = '';
+    document.getElementById('date').value = new Date().toISOString().substring(0, 10);
+    document.getElementById('weight').value = '';
+    document.getElementById('foodType').value = '';
+    document.getElementById('foodAmount').value = '';
+    document.getElementById('memo').value = '';
+
+    document.getElementById('form-title').innerText = '사육/성장 일지 쓰기';
+    document.getElementById('btn-save').innerText = '저장하기';
+    document.getElementById('btn-cancel').style.display = 'none';
+  }
+
+  function deleteLog(id) {
+    if (confirm('이 기록을 정말 삭제하시겠습니까?')) {
+      fetch(`/api/logs/${id}`, { method: 'DELETE' })
+              .then(response => {
+                if (response.ok) {
+                  loadLogs();
+                }
+              });
+    }
+  }
+</script>
+</body>
+</html>
